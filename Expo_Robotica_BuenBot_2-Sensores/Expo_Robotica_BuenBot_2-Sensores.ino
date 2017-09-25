@@ -1,4 +1,8 @@
 /*
+  EVALUAR SI LEER ANTES LAS VARIABLES DE DATOS
+*/
+
+/*
   EXPO ROBOTICA UBB 2017
   CLAUDIO MORALES GUTIERREZ
   IECI
@@ -17,9 +21,9 @@ Se inicializa en 1 porque parte recto
 byte sen_izq=A15; // sensor de la izquierda
 byte sen_der=A8; // sensor de la derecha
 
-int line=100; //lectura analoga de la linea blanca
+int line;
 
-int enderezar;
+int tiempo_enderezar=1000;
 //--velocidades--//
 byte vel_trasero=150; // establece la maxima velocidad
 byte vel_delantero=255;
@@ -68,10 +72,15 @@ void setup(){
     pinMode(ENB,OUTPUT);
     pinMode (IN3, OUTPUT);    // Input3 conectada al pin _ 
     pinMode (IN4, OUTPUT);    // Input4 conectada al pin _
-//dato
+
+
+
     byte sentido_giro=1;
 
     var_est=1;
+
+    line=100;
+
 }
 
 void loop(){
@@ -85,9 +94,9 @@ void loop(){
   if((analogRead(sen_izq)<line) && (analogRead(sen_der)<line) ){// si el sensor izquierdo y derecha detecta la linea blanca
     //ver el sentido de giro con un boton
     if (sentido==1){
-      giro_der();
+      giro_der(1000,1000,1000);
     }else if(sentido==0){
-      giro_izq();
+      giro_izq(1000,1000,1000);
     }
     
   }
@@ -113,40 +122,71 @@ void loop(){
 //trta : tiempo ruedas traseras atras
 //trdd : tiempo ruedas delanteras delante
 void giro_der(int trda,int trta,int trdd){
-  //Retrocede con las ruedas al otro lado : ruedas delanteras a la derecha
-  digitalWrite(IN3,LOW);
-  digitalWrite(IN4,HIGH);
-  analogWrite(ENB,velocidad_media);
-  
-  digitalWrite(IN1,HIGH);
-  digitalWrite(IN2,LOW);
-  analogWrite(ENA,velocidad_maxima);
 
-  delay(trda);
+    // motor delantero a un lado
+    analogWrite(ENA, velocidad_maxima);
+    digitalWrite (IN1, LOW);
+    digitalWrite (IN2, HIGH);
+    
+    // motor trasero atras
+    analogWrite(ENB, velocidad_maxima);
+    digitalWrite (IN3, HIGH);
+    digitalWrite (IN4, LOW);
+    delay(trda);
 
-  //Dobla hacia adelante
-  digitalWrite(IN1,LOW);
-  digitalWrite(IN2,HIGH);
-  analogWrite(ENA,velocidad_maxima);
+    //Dobla al sentido contrario hacia delante
+    digitalWrite (IN1, HIGH);
+    digitalWrite (IN2, LOW);
+    
+    digitalWrite (IN3, LOW);
+    digitalWrite (IN4, HIGH);
+    
+    delay(trta);
 
-  digitalWrite(IN3,LOW);
-  digitalWrite(IN4,HIGH);
-  analogWrite(ENB,velocidad_media);
 
-  delay(trdd);
+    digitalWrite (IN1, LOW);
+    digitalWrite (IN2, HIGH);
+    delayMicroseconds(tiempo_enderezar);
 
-  //enderezamos rueda
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
+    digitalWrite (IN1, LOW);
+    digitalWrite (IN2, LOW);
 
-  digitalWrite (IN1,HIGH);
-  digitalWrite (IN2,LOW);
-  
-  delayMicroseconds(enderezar);
-  
-  digitalWrite (IN1,LOW);
-  
-  digitalWrite (IN2,LOW);
+    delay(trdd);
+}
+
+
+
+void giro_izq(int trda,int trta,int trdd){
+
+    // motor delantero a un lado
+    analogWrite(ENA, velocidad_maxima);
+    digitalWrite (IN1,  HIGH);
+    digitalWrite (IN2, LOW);
+    
+    // motor trasero atras
+    analogWrite(ENB, velocidad_maxima);
+    digitalWrite (IN3, HIGH);
+    digitalWrite (IN4, LOW);
+    delay(1000);
+
+    //Dobla al sentido contrario hacia delante
+    digitalWrite (IN1,  LOW);
+    digitalWrite (IN2, HIGH);
+    
+    digitalWrite (IN3, LOW);
+    digitalWrite (IN4, HIGH);
+    
+    delay(1000);
+
+
+    digitalWrite (IN1, HIGH);
+    digitalWrite (IN2, LOW);
+    delayMicroseconds(9000);
+
+    digitalWrite (IN1, LOW);
+    digitalWrite (IN2, LOW);
+
+    delay(1000);
 
 }
 
@@ -155,7 +195,8 @@ void avanzar(){
       case 0:
 
         var_estado_ruedas=1;
-          // esta en la izquierda 
+
+
       break;
     
       case 1:
@@ -175,137 +216,6 @@ void avanzar(){
           // default is optional
       break;
   }
-}
-
-
-void giro_izq(int trda,int trta,int trdd){
-
-  //Retrocede con las ruedas al otro lado : ruedas delanteras a la derecha
-  digitalWrite(IN3,LOW);
-  digitalWrite(IN4,HIGH);
-  analogWrite(ENB,velocidad_media);
-  
-  //ruedas al otro lado
-  digitalWrite(IN1,HIGH);
-  digitalWrite(IN2,LOW);
-  analogWrite(ENA,velocidad_maxima);
-
-  delay(trda);
-
-  //dobla hacia adelante
-
-  digitalWrite(IN1,LOW);
-  digitalWrite(IN2,HIGH);
-  analogWrite(ENA,velocidad_maxima);
-
-  digitalWrite(IN3,LOW);
-  digitalWrite(IN4,HIGH);
-  analogWrite(ENB,velocidad_media);
-
-  delay(trdd);
-
-  //Apaga Ruedas delanteras
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-
-  digitalWrite (IN1,HIGH);
-  digitalWrite (IN2,LOW);
-  
-  delayMicroseconds(enderezar);
-  
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-
-  //Tendria que avanzar
-
-}
-
-
-//FUNCIONES APARTES
-void avanzar_izq(){
-  //dobla hacia adelante
-
-  digitalWrite(IN1,LOW);
-  digitalWrite(IN2,HIGH);
-  analogWrite(ENA,velocidad_maxima);
-
-  digitalWrite(IN3,LOW);
-  digitalWrite(IN4,HIGH);
-  analogWrite(ENB,velocidad_media);
-
-  delay();
-
-  //Apaga Ruedas delanteras
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-
-  digitalWrite (IN1,HIGH);
-  digitalWrite (IN2,LOW);
-  
-  delayMicroseconds(enderezar);
-  
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-  
-  //Tendria que avanzar
-
-}
-
-void avanzar_der(){
-    //dobla hacia adelante
-  digitalWrite(IN1,LOW);
-  digitalWrite(IN2,HIGH);
-  analogWrite(ENA,velocidad_maxima);
-
-  digitalWrite(IN3,LOW);
-  digitalWrite(IN4,HIGH);
-  analogWrite(ENB,velocidad_media);
-
-  delay();
-
-  //Apaga Ruedas delanteras
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-
-  digitalWrite (IN1,HIGH);
-  digitalWrite (IN2,LOW);
-  
-  delayMicroseconds(enderezar);
-  
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-
-  //Tendria que avanzar
-
-}
-
-
-void rueda_del_recta_izq(){
-
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-
-  digitalWrite (IN1,HIGH);
-  digitalWrite (IN2,LOW);
-  
-  delayMicroseconds(enderezar);
-  
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-}
-
-
-void rueda_del_rec_der(){
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW);
-
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,HIGH);
-  
-  delayMicroseconds(enderezar);
-  
-  digitalWrite (IN1,LOW);
-  digitalWrite (IN2,LOW); 
 }
 
 
