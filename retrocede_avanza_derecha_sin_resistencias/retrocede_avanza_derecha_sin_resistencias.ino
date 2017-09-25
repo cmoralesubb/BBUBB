@@ -1,6 +1,6 @@
 int tiempo = 2000;
-int i;
-int velocidad_baja = 170;
+
+int velocidad_baja = 190;
 int velocidad_media = 200;
 int velocidad_maxima = 255;
 
@@ -19,7 +19,7 @@ byte ENB = 13; // motor B Trasero
 void setup() {
 
   Serial.begin(9600);
-  Serial1.begin(38400);
+
 
 
   /*MOTOR DELANTERO*/
@@ -33,71 +33,55 @@ void setup() {
   pinMode (IN4, OUTPUT);    // Input4 conectada al pin _
   pinMode(ENB, OUTPUT);
 
-
-
 }
 
 void loop() {
-  char c = Serial1.read();
 
-  if (c == 'g') {
-    digitalWrite (IN1, LOW);
-    digitalWrite (IN2, LOW);
-
-    digitalWrite (IN3, LOW);
-    digitalWrite (IN4, LOW);
-  }
 
   //Motor trasero sigue su rumbo
-  if (c == 'a') {
-    //Motor trasero sigue su rumbo
+
+    
     // motor delantero a un lado
 
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, HIGH);
-    analogWrite(ENA, velocidad_maxima);
+        analogWrite(ENA, velocidad_maxima);
     
     // motor trasero atras
     analogWrite(ENB, velocidad_maxima);
     digitalWrite (IN3, HIGH);
     digitalWrite (IN4, LOW);
-    delay(700);
+    delay(500);
 
     //Dobla al sentido contrario hacia delante
-    for(i=velocidad_maxima;i>0;i--){
-      analogWrite(ENB,i);
-    }
-      
-
-    for(i=0;i<velocidad_maxima;i++){
-      analogWrite(ENB,i);  
-    }
-    digitalWrite (IN3, LOW);
-    digitalWrite (IN4, HIGH);
-    
-    
     digitalWrite (IN1, HIGH);
     digitalWrite (IN2, LOW);
     
+    digitalWrite (IN3, LOW);
+    digitalWrite (IN4, HIGH);
     
     delay(500);
 
+
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, HIGH);
-    delayMicroseconds(9000);
+    delayMicroseconds(8000);
 
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, LOW);
 
-    /*
+    delay(500);
+
+
+        digitalWrite (IN1, LOW);
+    digitalWrite (IN2, LOW);
+
     digitalWrite (IN3, LOW);
     digitalWrite (IN4, LOW);
-    */
     delay(1000);
 
 
-  }
-
 }
+
 
 
