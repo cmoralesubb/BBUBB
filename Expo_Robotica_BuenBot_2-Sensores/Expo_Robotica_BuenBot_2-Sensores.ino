@@ -68,7 +68,7 @@ void setup(){
     pinMode(ENB,OUTPUT);
     pinMode (IN3, OUTPUT);    // Input3 conectada al pin _ 
     pinMode (IN4, OUTPUT);    // Input4 conectada al pin _
-
+//dato
     byte sentido_giro=1;
 
     var_est=1;
@@ -307,6 +307,9 @@ void rueda_del_rec_der(){
   digitalWrite (IN1,LOW);
   digitalWrite (IN2,LOW); 
 }
+
+
+
 
 
 
