@@ -1,8 +1,8 @@
 int tiempo = 2000;
-int i;
+
 int velocidad_baja = 170;
 int velocidad_media = 200;
-int velocidad_maxima = 200;
+int velocidad_maxima = 255;
 
 //definicion de variables de los motores
 byte IN1 = 9;
@@ -43,25 +43,28 @@ void loop() {
   if (c == 'g') {
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, LOW);
- 
+
     digitalWrite (IN3, LOW);
     digitalWrite (IN4, LOW);
   }
 
   //Motor trasero sigue su rumbo
   if (c == 'a') {
+   
     //Motor trasero sigue su rumbo
-    // motor delantero a un lado
+    //Motor trasero sigue su rumbo
+    //Motor delantero a un lado
 
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, HIGH);
     analogWrite(ENA, velocidad_maxima);
     
     // motor trasero atras
-    analogWrite(ENB, velocidad_maxima);
+    analogWrite(ENB, velocidad_media);
     digitalWrite (IN3, HIGH);
     digitalWrite (IN4, LOW);
-    delay(1400);
+    
+    delay(1100);
 
     //Dobla al sentido contrario hacia delante
  
@@ -73,7 +76,7 @@ void loop() {
     digitalWrite (IN1, HIGH);
     digitalWrite (IN2, LOW);
         
-    delay(1000);
+    delay(1200);
 
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, HIGH);
@@ -82,15 +85,16 @@ void loop() {
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, LOW);
 
+    delay(1000);
+    digitalWrite(IN3,LOW);
+    digitalWrite(IN4,LOW);
+    delay(3000);
     /*
     digitalWrite (IN3, LOW);
     digitalWrite (IN4, LOW);
     */
-    delay(1000);
-
-
+  
   }
 
 }
 
- 
