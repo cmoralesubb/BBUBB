@@ -5,10 +5,12 @@
 
   /*
     EXPO ROBOTICA UBB 2017
-    CLAUDIO MORALES GUTIERREZ
+    MATIAS VIDAL GUTIERREZ , CLAUDIO MORALES GUTIERREZ
     IECI
     */
+
     int var_estado_ruedas;
+
   /*
     variable de estado 3 :
     0: esta a la izquierda
@@ -22,10 +24,7 @@
   byte sen_izq = 5; // sensor de la izquierda
   byte sen_der = 6; // sensor de la derecha
   byte sen_tras = 7;
-  
-  int pista;
-  
-  int tiempo_enderezar = 1000;
+
   //--velocidades--//
   byte vel_trasero = 150; // establece la maxima velocidad
   byte vel_delantero = 255;
@@ -56,12 +55,17 @@
   
   //--SENTIDO DE GIRO--//
   byte sentido_giro;
-  
-  
+
+  byte contador_pista; //contador de la pista cuando dobla memorizando pista
+
   int sensor_izquierdo;
   int sensor_derecho;
   int sensor_trasero;
   
+  int pista;
+
+  int tiempo_enderezar = 1000;
+
   
   void setup() {
     Serial1.begin(38400);
@@ -84,25 +88,11 @@
 
     pista = 1;
 
+    contador_pista=0;
+
   }
-  
+
   void loop() {
-    //detecta la pista
-    char c = Serial1.read();
-
-    if (c == 'g') {
-      digitalWrite (IN1, LOW);
-      digitalWrite (IN2, LOW);
-
-      digitalWrite (IN3, LOW);
-      digitalWrite (IN4, LOW);
-    }
-    if (c == 'a') {
-
-      Serial.println("Entro a c");
-      sensor_izquierdo = digitalRead(sen_izq);
-      sensor_derecho = digitalRead(sen_der);
-      sensor_trasero = digitalRead(sen_tras);
 
 
       if ((sensor_izquierdo == pista) && (sensor_derecho == pista)  && (sensor_trasero == pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
@@ -111,14 +101,17 @@
       }
 
 
-      if ((sensor_izquierdo != pista) && (sensor_derecho != pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
+      if ((sensor_izquierdo != pista) || (sensor_derecho != pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
         //ver el sentido de giro con un boton
-        if (sentido_giro == 1) {
+        if(contador_pista==0 || contador_pista ==2 || contador_pista== 4 || contador_pista==6 || contador_pista ==8){
+                  if (sentido_giro == 1) {
           giro_der();
-          } else if (sentido_giro == 0) {
-            giro_izq();
-          }
+        } else if (sentido_giro == 0) {
+          giro_izq();
+        }          
         }
+
+      }
 
       //Detecta el sensor de pistaa derecha
       if ((sensor_izquierdo == pista)  && (sensor_derecho != pista) && (sensor_trasero == pista)) { // si el sensor derecho detecta la pistaa blanca
@@ -133,25 +126,25 @@
         //Giro a la Derecha sentidos?
         emparejar_derecha();
       }
+
     }
-  }
-  
-  void detener() {
-    digitalWrite (IN1, LOW);
-    digitalWrite (IN2, LOW);
 
-    digitalWrite (IN3, LOW);
-    digitalWrite (IN4, LOW);
+    void detener() {
+      digitalWrite (IN1, LOW);
+      digitalWrite (IN2, LOW);
 
-  }
-  
-  void avanzar() {
-    Serial.println("Entro al avanzar");
-    digitalWrite (IN3, LOW);
-    digitalWrite (IN4, HIGH);
-    analogWrite(ENB, velocidad_maxima);
-  }
-  
+      digitalWrite (IN3, LOW);
+      digitalWrite (IN4, LOW);
+
+    }
+
+    void avanzar() {
+      Serial.println("Entro al avanzar");
+      digitalWrite (IN3, LOW);
+      digitalWrite (IN4, HIGH);
+      analogWrite(ENB, velocidad_maxima);
+    }
+
   //trda : tiempo ruedas delanteras atras
   //trta : tiempo ruedas traseras atras
   //trdd : tiempo ruedas delanteras delante
@@ -298,54 +291,4 @@
     analogWrite(ENB, velocidad_maxima);
 
   }
-  
-  
-  
-  
-  
-  
-  
-  /*
-    void avanzar(){
-    switch (var_estado_ruedas) {
-      case 0:
-  
-      var_estado_ruedas=1;
-  
-      digitalWrite (IN1, HIGH);
-      digitalWrite (IN2, LOW);
-      delayMicroseconds(9000);
-  
-      break;
-  
-      case 1:
-  
-      var_estado_ruedas=1;
-        //esta recto
-  
-        break;
-  
-        case 2:
-  
-        var_estado_ruedas=1;
-        //esta en la
-  
-        digitalWrite (IN1, HIGH);
-        digitalWrite (IN2, LOW);
-        delayMicroseconds(9000);
-  
-        break;
-  
-        default:
-        // if nothing else matches, do the default
-        // default is optional
-        break;
-      }
-  
-    }
-    }
-    */
-
-
-
 
