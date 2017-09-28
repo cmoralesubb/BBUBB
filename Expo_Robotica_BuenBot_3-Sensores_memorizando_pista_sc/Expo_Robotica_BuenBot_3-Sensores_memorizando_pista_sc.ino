@@ -9,8 +9,6 @@
     IECI
     */
 
-    int var_estado_ruedas;
-
   /*
     variable de estado 3 :
     0: esta a la izquierda
@@ -23,23 +21,15 @@
   //byte tipo dato de 0-255
   byte sen_izq = 5; // sensor de la izquierda
   byte sen_der = 6; // sensor de la derecha
-  byte sen_tras = 7;
-
-  //--velocidades--//
-  byte vel_trasero = 150; // establece la maxima velocidad
-  byte vel_delantero = 255;
   
   byte velocidad_maxima = 255;
-  byte velocidad_media = 255;
+  byte velocidad_media = 200;
   byte velocidad_minima = 100;
   
+  byte recto=0;
+  byte subida=-1;
+  byte bajada=1;
   
-  boolean doblando_izq;
-  boolean doblando_der;
-  boolean avanzando;
-  boolean retrocediendo;
-  
-  boolean doblando_recto;
   
   /* INPUTS DE PLACA L298D*/
   
@@ -56,7 +46,7 @@
   //--SENTIDO DE GIRO--//
   byte sentido_giro;
 
-  byte contador_pista; //contador de la pista cuando dobla memorizando pista
+  byte contacto; //contador de la pista cuando dobla memorizando pista
 
   int sensor_izquierdo;
   int sensor_derecho;
@@ -68,9 +58,9 @@
 
   
   void setup() {
-    Serial1.begin(38400);
-    Serial.begin(9600);
 
+    Serial.begin(9600);
+    delay(3000);
     pinMode(sen_izq, INPUT);  // sensor inicia como entrada
     pinMode(sen_der, INPUT);  // snesor inicia como entrada
 
@@ -84,51 +74,60 @@
     pinMode (IN3, OUTPUT);    // Input3 conectada al pin _
     pinMode (IN4, OUTPUT);    // Input4 conectada al pin _
 
-    byte sentido_giro = 1; // cambiar segun el boton 
+    sentido_giro = 1; // cambiar segun el boton 
 
     pista = 1;
 
-    contador_pista=0;
+    contacto=0;
+
 
   }
 
   void loop() {
+      sensor_izquierdo=digitalRead(sen_izq);
+      sensor_derecho=digitalRead(sen_der);
+      sensor_trasero=digitalRead(sen_tras);      
+      Serial.println(sensor_izquierdo);
 
 
-      if ((sensor_izquierdo == pista) && (sensor_derecho == pista)  && (sensor_trasero == pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
-        //rueda directa
-        avanzar();
-      }
-
-
-      if ((sensor_izquierdo != pista) || (sensor_derecho != pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
+        if ((sensor_izquierdo != pista) && (sensor_derecho != pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
         //ver el sentido de giro con un boton
-        if(contador_pista ==1 || contador_pista== 3 || contador_pista==5 || contador_pista ==7){
+        if(contacto==1){
           if (sentido_giro == 1) {
+              Serial.println("giro derecha");
               giro_der();
             } else if (sentido_giro == 0) {
+              Serial.println("giro izquierda");
               giro_izq();
             }          
           }
-
+          contacto=0;
         }
-
-      //Detecta el sensor de pistaa derecha
-      if ((sensor_izquierdo == pista)  && (sensor_derecho != pista) && (sensor_trasero == pista)) { // si el sensor derecho detecta la pistaa blanca
-        //Giro a la Izquierda, sera con sentidos?
-        contador_pista++;
-        emparejar_izquierda();
-
+  
+      if ((sensor_izquierdo == pista) && (sensor_derecho == pista) ) { // si el sensor izquierdo y derecha detecta la pistaa blanca
+        //rueda directa
+        Serial.println("avanzando");
+        avanzar();
       }
 
+      //Detecta el sensor de pistaa derecha
+      if ((sensor_izquierdo == pista)  && (sensor_derecho != pista) ) { // si el sensor derecho detecta la pistaa blanca
+        //Giro a la Izquierda, sera con sentidos
+        contacto=1;
+        Serial.println("emparejar izquierda");
+        emparejar_izquierda();
+      }
 
       // Detecta la pistaa I zquierda
-      if ((sensor_izquierdo != pista) && (sensor_derecho == pista) && (sensor_trasero == pista)) { // si el sensor izquierdo detecta la pistaa blanca
+      if ((sensor_izquierdo != pista) && (sensor_derecho == pista) ) { // si el sensor izquierdo detecta la pistaa blanca
         //Giro a la Derecha sentidos?
-        contador_pista**;
+        contacto=1;
+        Serial.println("emparejar derecha");
         emparejar_derecha();
       }
 
+    delay(50);      
+    
     }
 
     void detener() {
@@ -141,7 +140,6 @@
     }
 
     void avanzar() {
-      Serial.println("Entro al avanzar");
       digitalWrite (IN3, LOW);
       digitalWrite (IN4, HIGH);
       analogWrite(ENB, velocidad_maxima);
@@ -151,8 +149,7 @@
   //trta : tiempo ruedas traseras atras
   //trdd : tiempo ruedas delanteras delante
   void giro_der() {
-         //Motor trasero sigue su rumbo
-
+    //Motor trasero sigue su rumbo
     //Motor trasero sigue su rumbo
     //Motor delantero a un lado
 
@@ -187,13 +184,10 @@
     digitalWrite (IN2, LOW);
 
     delay(1000);
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, LOW);
-    delay(3000);
+   
   }
   
   void emparejar_derecha() {
-    Serial.println("Emparejar_derecha");
     analogWrite(ENB, velocidad_media);
     analogWrite(ENA,velocidad_maxima);
     
@@ -222,20 +216,21 @@
   }
 
   void giro_izq() {
-         //Motor trasero sigue su rumbo
-
+    //Motor trasero sigue su rumbo
     //Motor trasero sigue su rumbo
     //Motor delantero a un lado
+
+    analogWrite(ENB, velocidad_media);
+    digitalWrite (IN3, HIGH);
+    digitalWrite (IN4, LOW);
+
 
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, HIGH);
     analogWrite(ENA, velocidad_maxima);
 
     // motor trasero atras
-    analogWrite(ENB, velocidad_media);
-    digitalWrite (IN3, HIGH);
-    digitalWrite (IN4, LOW);
-
+   
     delay(1100);
 
     //Dobla al sentido contrario hacia delante
@@ -258,16 +253,14 @@
     digitalWrite (IN2, LOW);
 
     delay(1000);
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, LOW);
-    delay(3000);
+
 
   }
 
   
   
   void emparejar_izquierda() {
-    Serial.println("Emparejar_derecha");
+    Serial.println("Emparejar_izquierda");
     analogWrite(ENB, velocidad_media);
     analogWrite(ENA,velocidad_maxima);
     
@@ -293,4 +286,5 @@
     analogWrite(ENB, velocidad_maxima);
 
   }
+
 
