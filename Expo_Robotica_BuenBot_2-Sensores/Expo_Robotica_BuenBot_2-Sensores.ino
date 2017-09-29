@@ -31,7 +31,7 @@
   byte vel_delantero = 255;
   
   byte velocidad_maxima = 255;
-  byte velocidad_media = 255;
+  byte velocidad_media = 200;
   byte velocidad_minima = 100;
   
   

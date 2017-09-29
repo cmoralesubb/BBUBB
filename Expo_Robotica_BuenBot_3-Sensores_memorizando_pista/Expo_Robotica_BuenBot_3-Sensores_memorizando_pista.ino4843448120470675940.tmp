@@ -97,7 +97,7 @@
       sensor_derecho=digitalRead(sen_der);
       
 
-      if ((sensor_izquierdo == pista) && (sensor_derecho == pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
+      if ((sensor_izquierdo == pista) && (sensor_derecho == pista)  && (sensor_trasero == pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
         //rueda directa
         avanzar();
       }
@@ -116,7 +116,7 @@
         }
 
       //Detecta el sensor de pistaa derecha
-      if ((sensor_izquierdo == pista)  && (sensor_derecho != pista) ) { // si el sensor derecho detecta la pistaa blanca
+      if ((sensor_izquierdo == pista)  && (sensor_derecho != pista) && (sensor_trasero == pista)) { // si el sensor derecho detecta la pistaa blanca
         //Giro a la Izquierda, sera con sentidos?
         contador_pista++;
         emparejar_izquierda();
@@ -125,7 +125,7 @@
 
 
       // Detecta la pistaa I zquierda
-      if ((sensor_izquierdo != pista) && (sensor_derecho == pista)) { // si el sensor izquierdo detecta la pistaa blanca
+      if ((sensor_izquierdo != pista) && (sensor_derecho == pista) && (sensor_trasero == pista)) { // si el sensor izquierdo detecta la pistaa blanca
         //Giro a la Derecha sentidos?
         contador_pista++;
         emparejar_derecha();

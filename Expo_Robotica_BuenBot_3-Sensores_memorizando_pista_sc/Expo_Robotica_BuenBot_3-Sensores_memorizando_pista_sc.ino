@@ -86,8 +86,7 @@
   void loop() {
       sensor_izquierdo=digitalRead(sen_izq);
       sensor_derecho=digitalRead(sen_der);
-      sensor_trasero=digitalRead(sen_tras);      
-      Serial.println(sensor_izquierdo);
+
 
 
         if ((sensor_izquierdo != pista) && (sensor_derecho != pista)) { // si el sensor izquierdo y derecha detecta la pistaa blanca
@@ -152,13 +151,14 @@
     //Motor trasero sigue su rumbo
     //Motor trasero sigue su rumbo
     //Motor delantero a un lado
-
+     analogWrite(ENB, velocidad_media);
+  analogWrite(ENA, velocidad_maxima);
     digitalWrite (IN1, HIGH);
     digitalWrite (IN2, LOW);
-    analogWrite(ENA, velocidad_maxima);
+    
 
     // motor trasero atras
-    analogWrite(ENB, velocidad_media);
+   
     digitalWrite (IN3, HIGH);
     digitalWrite (IN4, LOW);
 
@@ -219,7 +219,7 @@
     //Motor trasero sigue su rumbo
     //Motor trasero sigue su rumbo
     //Motor delantero a un lado
-
+    analogWrite(ENA, velocidad_maxima);
     analogWrite(ENB, velocidad_media);
     digitalWrite (IN3, HIGH);
     digitalWrite (IN4, LOW);
@@ -227,7 +227,7 @@
 
     digitalWrite (IN1, LOW);
     digitalWrite (IN2, HIGH);
-    analogWrite(ENA, velocidad_maxima);
+
 
     // motor trasero atras
    

@@ -1,3 +1,8 @@
+const int button = ;
+int button_state = LOW;
+int flag = 0;
+
+ 
 int tiempo=2000;
 
 int velocidad_baja=170;
@@ -19,8 +24,7 @@ byte ENB=13; // motor B Trasero
 void setup() {
   
   Serial.begin(9600);
-  Serial1.begin(38400);
-
+  delay(3000);
   pinMode (IN1, OUTPUT);    // Input1 conectada al pin _ 
   pinMode (IN2, OUTPUT);    // Input2 conectada al pin _ 
   pinMode(ENA,OUTPUT);
@@ -29,21 +33,20 @@ void setup() {
   pinMode (IN3, OUTPUT);    // Input3 conectada al pin _ 
   pinMode (IN4, OUTPUT);    // Input4 conectada al pin _
   pinMode(ENB,OUTPUT);
- 
- 
+do{
+  button_state = digitalRead(button);
+  if(button_state == HIGH){
+    flag = 1;
+  }
+}while(flag == 0);
  
 }
 
 void loop() {
-  char c=Serial1.read();
 
-    if(c=='g'){    
-      digitalWrite (IN3,LOW);
-      digitalWrite (IN4,LOW);
-    }
   
     //Motor trasero sigue su rumbo
-    if(c=='a'){
+
       //rueda delantera recta
         analogWrite(ENA,velocidad_maxima);
         digitalWrite (IN1,LOW);
@@ -53,7 +56,6 @@ void loop() {
         digitalWrite (IN3,LOW);
         digitalWrite (IN4,HIGH);
    
-  }
     
 }
 
